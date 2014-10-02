@@ -5,20 +5,21 @@
  *      Author: weitingtu
  */
 #include "watReader.h"
+#include "watStruct.h"
 #include <stdlib.h>
 #include <iostream>
 
-WATParser::WATParser():
-  _watManager()
+WATReader::WATReader():
+  _pWatManager(NULL)
 {
 }
 
-WATParser::~WATParser()
+WATReader::~WATReader()
 {
 }
 
 void
-WATParser::parse(const string& line, const int nb)
+WATReader::readline(const string& line, const int nb)
 {
   if(1 == nb) {
     // ignore
@@ -40,7 +41,7 @@ WATParser::parse(const string& line, const int nb)
 
 // parse header line #2
 void
-WATParser::parseHeader2(const string& line)
+WATReader::parseHeader2(const string& line)
 {
   size_t pos = 0;
   pos = line.find(' ', pos + 1);
@@ -50,8 +51,9 @@ WATParser::parseHeader2(const string& line)
   watManager().setLotID(token);
 }
 
+// parse header line #5
 void
-WATParser::parseHeader5(const string& line)
+WATReader::parseHeader5(const string& line)
 {
   size_t pos = 7;
   size_t len = 18;
@@ -62,8 +64,9 @@ WATParser::parseHeader5(const string& line)
   }
 }
 
+// parse wafer data value
 void
-WATParser::parseDataValue(const string& line)
+WATReader::parseDataValue(const string& line)
 {
   size_t pos = 0;
   size_t len = 2;
@@ -86,12 +89,11 @@ WATParser::parseDataValue(const string& line)
     w.addParameter(v);
   }
 
-  //watList().push_back(w);
   watManager().addWAT(w);
 }
 
 int
-WATParser::parseInt(const string& line, size_t& pos, const size_t& len, const size_t& space)
+WATReader::parseInt(const string& line, size_t& pos, const size_t& len, const size_t& space)
 {
   string token = line.substr(pos, len);
   int v = atoi(token.c_str());
@@ -100,7 +102,7 @@ WATParser::parseInt(const string& line, size_t& pos, const size_t& len, const si
 }
 
 double
-WATParser::parseDouble(const string& line, size_t& pos, const size_t& len, const size_t& space)
+WATReader::parseDouble(const string& line, size_t& pos, const size_t& len, const size_t& space)
 {
   string token = line.substr(pos, len);
   double v = atof(token.c_str());
@@ -109,14 +111,9 @@ WATParser::parseDouble(const string& line, size_t& pos, const size_t& len, const
 }
 
 string
-WATParser::parseString(const string& line, size_t& pos, const size_t& len, const size_t& space)
+WATReader::parseString(const string& line, size_t& pos, const size_t& len, const size_t& space)
 {
   string token = line.substr(pos, len);
   pos = pos + len + space;
   return token;
 }
-
-
-
-
-

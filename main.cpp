@@ -8,8 +8,8 @@
 #include <fstream>
 #include <string>
 using namespace std;
-
 #include "watReader.h"
+#include "watStruct.h"
 
 int main ()
 {
@@ -22,21 +22,19 @@ int main ()
     return 1;
   }
 
-  WATParser parser;
+  WATManager manager;
+  WATReader reader;
+  reader.setWatManager(&manager);
 
   while(!infile.eof())
   {
     nb ++;
     getline(infile, line);
-    parser.parse(line, nb);
+    reader.readline(line, nb);
   }
   infile.close();
 
-  parser.calculate();
-  parser.dump();
+  manager.calculate();
+  manager.dump();
   return 0;
 }
-
-
-
-

@@ -10,19 +10,17 @@
 using namespace std;
 #include <list>
 #include <string>
-#include "watStruct.h"
 
-class WAT;
+class WATManager;
 
-class WATParser {
+class WATReader {
 public:
-  WATParser();
-  virtual ~WATParser();
+  WATReader();
+  virtual ~WATReader();
 
-  void parse(const string& line, const int nb);
-  void print(void) const {watManager().print();}
-  void dump(void) const {watManager().dump();}
-  void calculate(void) {watManager().calculate();}
+  void setWatManager(WATManager* const m) {_pWatManager = m;}
+  void readline(const string& line, const int nb);
+
 private:
   void parseHeader2(const string& line);
   void parseHeader5(const string& line);
@@ -31,14 +29,11 @@ private:
   double parseDouble(const string& line, size_t& pos, const size_t& len, const size_t& space);
   string parseString(const string& line, size_t& pos, const size_t& len, const size_t& space);
 
-  const WATManager& watManager(void) const {return _watManager;}
-  WATManager& watManager(void) {return const_cast<WATManager& >(static_cast<const WATParser*>(this)->watManager());}
+  const WATManager& watManager(void) const {return *_pWatManager;}
+  WATManager& watManager(void) {return const_cast<WATManager& >(static_cast<const WATReader*>(this)->watManager());}
 
-  WATManager    _watManager;
+  WATManager* _pWatManager;
 };
 
 #endif
-
-
-
 

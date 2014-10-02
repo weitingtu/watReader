@@ -26,32 +26,9 @@ WATManager::~WATManager()
 }
 
 void
-WATManager::printWATList(const list<WAT>& watList) const
-{
-  list<WAT>::const_iterator it    = watList.begin();
-  list<WAT>::const_iterator itEnd = watList.end();
-  for(;it != itEnd; ++it)
-  {
-    printWAT(*it);
-  }
-}
-
-void
-WATManager::printWAT(const WAT& w) const
-{
-  cout << w.waferID() << " " << w.siteID();
-  list <double>::const_iterator it    = w.parameterList().begin();
-  list <double>::const_iterator itEnd = w.parameterList().end();
-  for(;it != itEnd; ++it) {
-    cout << " " << *it;
-  }
-  cout << endl;
-}
-
-void
 WATManager::calculate(void)
 {
-  initializeAveData();
+  initializeAverageData();
   map<int, vector<double> >::iterator it    = aveMap().begin();
   map<int, vector<double> >::iterator itEnd = aveMap().end();
   for(;it != itEnd; ++it)
@@ -64,63 +41,28 @@ WATManager::calculate(void)
 }
 
 void
-WATManager::initializeAveData(void)
+WATManager::initializeAverageData(void)
 {
   list<WAT>::const_iterator it    = watList().begin();
   list<WAT>::const_iterator itEnd = watList().end();
   for(;it != itEnd; ++it)
   {
-    addAveData(*it);
+    addAverageData(*it);
   }
 }
 
 void
-WATManager::addAveData(const WAT& w)
+WATManager::addAverageData(const WAT& w)
 {
   map<int, vector<double> >::const_iterator it = aveMap().find(w.waferID());
-  bool needInit = aveMap().end() == it;
+  if(aveMap().end() == it) {
+	aveMap()[w.waferID()] = vector<double>(fieldList().size(), 0);;
+	nbMap()[w.waferID()] = 0;
+  }
   vector<double>& ave = aveMap()[w.waferID()];
   int& nb = nbMap()[w.waferID()];
-  if(needInit) {
-    ave.resize(fieldList().size());
-    initializeVector(ave);
-    nb = 0;
-  }
   addWATParameter(ave, w);
   ++nb;
-}
-
-vector<double>
-WATManager::calculateWAT(const int waferID) const
-{
-  vector<double> ave;
-  ave.resize(fieldList().size());
-  initializeVector(ave);
-
-  int nb = 0;
-  list<WAT>::const_iterator it    = watList().begin();
-  list<WAT>::const_iterator itEnd = watList().end();
-  for(;it != itEnd; ++it)
-  {
-    if((*it).waferID() != waferID) {
-      continue;
-    }
-    addWATParameter(ave, (*it));
-    ++nb;
-  }
-  getAverage(ave, nb);
-
-  return ave;
-}
-
-void
-WATManager::initializeVector(vector<double>& v) const
-{
-  size_t size = v.size();
-  for(size_t idx = 0; idx < size; ++idx)
-  {
-    v[idx] = 0;
-  }
 }
 
 void
@@ -196,7 +138,3 @@ WATManager::dump(void) const
 
   outfile.close();
 }
-
-
-
-

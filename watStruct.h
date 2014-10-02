@@ -19,7 +19,6 @@ public:
     _waferID(waferID),
     _siteID(siteID)
   {}
-
   virtual ~WAT() {}
   int waferID(void) const {return _waferID;}
   int siteID(void) const {return _siteID;}
@@ -44,21 +43,16 @@ public:
   void addWAT(const WAT& w) {watList().push_back(w);}
   void addField(const string& p) {fieldList().push_back(p);}
   void setLotID(const string& id) {lotID() = id;}
-  void print(void) const {printWATList(watList());}
   void dump(void) const;
   void calculate(void);
 
 private:
-  void printWAT(const WAT& w) const;
-  void printWATList(const list<WAT>& watList) const;
-  vector<double> calculateWAT(const int waferID) const;
-  void initializeVector(vector<double>& v) const;
   void addWATParameter(vector<double>& ave, const WAT& w) const;
   void getAverage(vector<double>& ave, const int nb) const;
   void printAverage(const vector<double>& ave) const;
 
-  void initializeAveData(void);
-  void addAveData(const WAT& w);
+  void initializeAverageData(void);
+  void addAverageData(const WAT& w);
 
   const string& lotID(void) const {return _lotID;}
   string& lotID(void) {return const_cast<string&>(static_cast<const WATManager*>(this)->lotID());}
