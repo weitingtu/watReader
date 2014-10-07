@@ -129,8 +129,7 @@ WATManager::dump(void) const
     outfile << (*mit).first;
     const vector<double>& ave = (*mit).second;
     size_t size = ave.size();
-    for(size_t idx = 0; idx < size; ++idx)
-    {
+    for (size_t idx = 0; idx < size; ++idx) {
       outfile << "," << ave[idx];
     }
     outfile << endl;

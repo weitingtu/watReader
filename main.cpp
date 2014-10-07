@@ -11,13 +11,12 @@ using namespace std;
 #include "watReader.h"
 #include "watStruct.h"
 
-int main ()
-{
+int main() {
   int nb = 0;
   string line;
   ifstream infile;
-  infile.open ("./WAT_report.txt");
-  if(!infile.good()) {
+  infile.open("./WAT_report.txt");
+  if (!infile.good()) {
     cout << "Open file failed." << endl;
     return 1;
   }
@@ -26,9 +25,8 @@ int main ()
   WATReader reader;
   reader.setWatManager(&manager);
 
-  while(!infile.eof())
-  {
-    nb ++;
+  while (!infile.eof()) {
+    nb++;
     getline(infile, line);
     reader.readline(line, nb);
   }

@@ -14,23 +14,35 @@ using namespace std;
 class WATManager;
 
 class WATReader {
-public:
+ public:
   WATReader();
   virtual ~WATReader();
 
-  void setWatManager(WATManager* const m) {_pWatManager = m;}
+  void setWatManager(WATManager* const m) {
+    _pWatManager = m;
+  }
   void readline(const string& line, const int nb);
 
-private:
+ private:
+  WATReader(const WATReader& r);
+  WATReader& operator=(const WATReader& rhs);
   void parseHeader2(const string& line);
   void parseHeader5(const string& line);
   void parseDataValue(const string& line);
-  int parseInt(const string& line, size_t& pos, const size_t& len, const size_t& empty);
-  double parseDouble(const string& line, size_t& pos, const size_t& len, const size_t& space);
-  string parseString(const string& line, size_t& pos, const size_t& len, const size_t& space);
+  int parseInt(const string& line, size_t& pos, const size_t& len,
+               const size_t& empty);
+  double parseDouble(const string& line, size_t& pos, const size_t& len,
+                     const size_t& space);
+  string parseString(const string& line, size_t& pos, const size_t& len,
+                     const size_t& space);
 
-  const WATManager& watManager(void) const {return *_pWatManager;}
-  WATManager& watManager(void) {return const_cast<WATManager& >(static_cast<const WATReader*>(this)->watManager());}
+  const WATManager& watManager(void) const {
+    return *_pWatManager;
+  }
+  WATManager& watManager(void) {
+    return const_cast<WATManager&>(static_cast<const WATReader*>(this)
+        ->watManager());
+  }
 
   WATManager* _pWatManager;
 };

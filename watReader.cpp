@@ -9,19 +9,24 @@
 #include <stdlib.h>
 #include <iostream>
 
-WATReader::WATReader():
-  _pWatManager(NULL)
-{
+WATReader::WATReader()
+    : _pWatManager(NULL) {
 }
 
-WATReader::~WATReader()
-{
+WATReader::~WATReader() {
 }
 
-void
-WATReader::readline(const string& line, const int nb)
-{
-  if(1 == nb) {
+WATReader::WATReader(const WATReader& r)
+    : _pWatManager(r._pWatManager) {
+}
+
+WATReader& WATReader::operator=(const WATReader& rhs) {
+  _pWatManager = rhs._pWatManager;
+  return *this;
+}
+
+void WATReader::readline(const string& line, const int nb) {
+  if (1 == nb) {
     // ignore
   } else if (2 == nb) {
     parseHeader2(line);
@@ -40,9 +45,7 @@ WATReader::readline(const string& line, const int nb)
 }
 
 // parse header line #2
-void
-WATReader::parseHeader2(const string& line)
-{
+void WATReader::parseHeader2(const string& line) {
   size_t pos = 0;
   pos = line.find(' ', pos + 1);
   pos = line.find(' ', pos + 1);
@@ -52,27 +55,23 @@ WATReader::parseHeader2(const string& line)
 }
 
 // parse header line #5
-void
-WATReader::parseHeader5(const string& line)
-{
+void WATReader::parseHeader5(const string& line) {
   size_t pos = 7;
   size_t len = 18;
   size_t space = 2;
-  while(pos < line.size()) {
+  while (pos < line.size()) {
     string v = parseString(line, pos, len, space);
     watManager().addField(v);
   }
 }
 
 // parse wafer data value
-void
-WATReader::parseDataValue(const string& line)
-{
+void WATReader::parseDataValue(const string& line) {
   size_t pos = 0;
   size_t len = 2;
   size_t space = 2;
   int waferID = parseInt(line, pos, len, space);
-  if(0 == waferID) {
+  if (0 == waferID) {
     // not data value
     return;
   }
@@ -84,7 +83,7 @@ WATReader::parseDataValue(const string& line)
   WAT w = WAT(waferID, siteID);
   len = 14;
   space = 6;
-  while(pos < line.size()) {
+  while (pos < line.size()) {
     double v = parseDouble(line, pos, len, space);
     w.addParameter(v);
   }
@@ -92,27 +91,24 @@ WATReader::parseDataValue(const string& line)
   watManager().addWAT(w);
 }
 
-int
-WATReader::parseInt(const string& line, size_t& pos, const size_t& len, const size_t& space)
-{
+int WATReader::parseInt(const string& line, size_t& pos, const size_t& len,
+                        const size_t& space) {
   string token = line.substr(pos, len);
   int v = atoi(token.c_str());
   pos = pos + len + space;
   return v;
 }
 
-double
-WATReader::parseDouble(const string& line, size_t& pos, const size_t& len, const size_t& space)
-{
+double WATReader::parseDouble(const string& line, size_t& pos,
+                              const size_t& len, const size_t& space) {
   string token = line.substr(pos, len);
   double v = atof(token.c_str());
   pos = pos + len + space;
   return v;
 }
 
-string
-WATReader::parseString(const string& line, size_t& pos, const size_t& len, const size_t& space)
-{
+string WATReader::parseString(const string& line, size_t& pos,
+                              const size_t& len, const size_t& space) {
   string token = line.substr(pos, len);
   pos = pos + len + space;
   return token;
